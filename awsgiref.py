@@ -1,3 +1,16 @@
+#!/home/agr/.virtualenvs/wse/bin/python3.12
+# -*-coding:utf-8 -*-
+'''
+⦿ Project  : Orbit
+⦿ Desc.     :  Web framework de back-end que trata ( http request ) de maneira assíncrona, ideal para programadores python.
+⦿ Author  :   João Aguiar 
+⦿ Contact :   joao.aguiar@webstrucs.com
+⦿ File         :   awsgiref.py
+⦿ Time      :   2024/08/31 07:16:11
+⦿ Version :   1.0.0
+⦿ License :   © Webstrucs 2024,  Powered by João Aguiar
+'''
+
 # Importa o módulo asyncio para suportar programação assíncrona, essencial para lidar com operações de I/O não bloqueantes.
 import asyncio 
 # Importa o módulo de logging para registrar eventos e mensagens de erro, útil para depuração e monitoramento da aplicação.
