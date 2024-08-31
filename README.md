@@ -1,2 +1,2 @@
 # orbit-py
-Web framework (back-end) que trata as http requests de maneira assíncronas, ideal para programadores python.  
+Web framework (back-end) que trata as http request de maneira assíncrona, ideal para programadores python.  
