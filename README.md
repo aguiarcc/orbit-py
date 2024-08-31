@@ -1,2 +1,2 @@
 # orbit-py
-Web Framework de Back-End para Programadores na Linguagem Python.
+Web framework (back-end) que trata as http requests de maneira assíncronas, ideal para programadores python.  
