@@ -1,3 +1,16 @@
+#!/home/agr/.virtualenvs/wse/bin/python3.12
+# -*-coding:utf-8 -*-
+'''
+⦿ Project  : Orbit
+⦿ Desc.     :  Web framework de back-end que trata ( http request ) de maneira assíncrona, ideal para programadores python.
+⦿ Author  :   João Aguiar 
+⦿ Contact :   joao.aguiar@webstrucs.com
+⦿ File         :   eventcenter.py
+⦿ Time      :   2024/08/31 08:25:21
+⦿ Version :   1.0.0
+⦿ License :   © Webstrucs 2024,  Powered by João Aguiar
+'''
+
 # Importa o módulo asyncio para permitir programação assíncrona, essencial para operações de I/O não bloqueantes.
 import asyncio
 # Importa tipagens genéricas. 'Dict' para dicionários e 'Any' para permitir qualquer tipo de dado.

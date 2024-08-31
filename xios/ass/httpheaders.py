@@ -1,77 +1,124 @@
-# Módulo Nativo: asynchronous I/O -> https://docs.python.org/3/library/asyncio.html#module-asyncio
-import asyncio
-# Módulo Nativo: HTTPStatus -> (https://docs.python.org/3/library/http.html#module-http)
+#!/home/agr/.virtualenvs/wse/bin/python3.12
+# -*-coding:utf-8 -*-
+'''
+⦿ Project  : Orbit
+⦿ Desc.     :  Web framework de back-end que trata ( http request ) de maneira assíncrona, ideal para programadores python.
+⦿ Author  :   João Aguiar 
+⦿ Contact :   joao.aguiar@webstrucs.com
+⦿ File         :   httpheaders.py
+⦿ Time      :   2024/08/31 08:25:44
+⦿ Version :   1.0.0
+⦿ License :   © Webstrucs 2024, Powered by João Aguiar
+'''
+
+# Importa o módulo asyncio, que fornece suporte para programação assíncrona e operações baseadas em eventos.
+import asyncio  
+
+# Importa o módulo HTTPStatus, que fornece constantes para representar códigos de status HTTP de forma legível.
 from http import HTTPStatus
 
+# Importa tipos de dados para tipagem estática: Tuple (tupla), List (lista), Callable (função de callback), Any (qualquer tipo de dado).
+from typing import Tuple, List, Callable, Any
 
-# Define classe HTTPResponse, relacionada as repostas 
-class HTTPHeaders():
+# Importa a classe Event do módulo xios.eda.event para representar um evento em um sistema baseado em EDA (Arquitetura Orientada a Eventos).
+from xios.ass.event import Event
 
-    # Define Method Constructor
-    def __init__( self ):
+class HTTPHeaders:
+    """
+    Classe para gerenciar cabeçalhos HTTP e gerar respostas apropriadas.
+    """
 
-        # Define propriedades relacionado
-        self.v_value = None
-        self.v_phrase = None
-        self.v_status = None
-        self.v_headers = None
+    # Método inicializador da classe, usado para configurar atributos iniciais.
+    def __init__(self):
 
-    # Metodo assincrono para ouvir e processar o evento header http
-    async def listen_text_200(self, http_response):
+        # Atribui um nome para o servidor de documentos HTTP.
+        self.server_name = "Orbit v0.0.1"
+
+    # Método assíncrono que prepara a resposta HTTP com status e cabeçalhos.
+    async def _prepare_response(self, status: HTTPStatus, content_type: str, extra_headers: List[Tuple[str, str]] = None) -> Tuple[str, List[Tuple[str, str]]]:
+        """
+        Prepara a resposta HTTP com status e cabeçalhos.
+        """
+        # Define cabeçalhos padrão, incluindo tipo de conteúdo e nome do servidor.
+        headers = [
+            ('Content-type', f'{content_type}; charset=utf-8'),
+            ("Server", self.server_name)
+        ]
         
-        start_response = http_response.data['start_response']
-        status = f"{HTTPStatus.OK.value} {HTTPStatus.OK.phrase}"  # Define o status 200 OK
-        headers = [
-            ('Content-type', 'text/plain; charset=utf-8'),
-            ("Server", "W.F. Orbit v1.0.0") 
-        ]  # Define os headers para texto simples UTF-8
-        return start_response(status, headers)  # Chama start_response com status e headers
-          
-    async def listen_http_200(self, http_response):
+        # Se houver cabeçalhos adicionais, eles são adicionados à lista de cabeçalhos.
+        if extra_headers:
+            headers.extend(extra_headers)
 
-        start_response = http_response.data['start_response']
-        status = f"{HTTPStatus.OK.value} {HTTPStatus.OK.phrase}"  # Define o status 200 OK
-        headers = [
-            ('Content-type', 'text/html; charset=utf-8'),
-            ("Server", "W.F. Orbit v1.0.0")             
-        ]  # Define os headers para HTML UTF-8
-        return start_response(status, headers)  # Chama start_response com status e headers
-         
-    async def listen_http_401(self, http_response):
+        # Retorna a linha de status e os cabeçalhos preparados.
+        return f"{status.value} {status.phrase}", headers
 
-        start_response = http_response.data['start_response']
-        status = f"{HTTPStatus.UNAUTHORIZED.value} {HTTPStatus.UNAUTHORIZED.phrase}"  # Define o status 401 Unauthorized
-        headers = [
-            ('Content-type', 'text/plain; charset=utf-8'),
-            ("Server", "W.F. Orbit v1.0.0"),
-            ('WWW-Authenticate', 'xBasic realm="Access to the staging site", charset="UTF-8"')
-        ]  # Define os headers para resposta 401 com autenticação básica
-        return  start_response(status, headers)  # Chama start_response com status e headers
+    # Método assíncrono que envia a resposta HTTP usando a função `start_response` do evento.
+    async def _send_response(self, http_response: Event, status: HTTPStatus, content_type: str, extra_headers: List[Tuple[str, str]] = None) -> Any:
+        """
+        Envia a resposta HTTP usando a função start_response do evento.
+        """
+        # Obtém a função de callback `start_response` do objeto de evento.
+        start_response: Callable = http_response.data['start_response']
         
-    async def listen_http_404(self, http_response):
+        # Prepara a linha de status e os cabeçalhos da resposta.
+        status_line, headers = await self._prepare_response(status, content_type, extra_headers)
+        
+        # Chama a função `start_response` com os status e cabeçalhos preparados e retorna o resultado.
+        return start_response(status_line, headers)
 
-        start_response = http_response.data['start_response']
-        status = f"{HTTPStatus.NOT_FOUND.value} {HTTPStatus.NOT_FOUND.phrase}"  # Define o status 404 Not Found
-        headers = [
-            ('Content-type', 'text/plain; charset=utf-8'),
-            ("Server", "W.F. Orbit v1.0.0")    
-        ]  # Define os headers para texto simples UTF-8
-        return start_response(status, headers)  # Chama start_response com status e headers
-          
+    # Método assíncrono que gera uma resposta 200 OK com conteúdo de texto simples.
+    async def listen_text_200(self, http_response: Event) -> Any:
+        """Gera uma resposta 200 OK com conteúdo de texto simples."""
+        return await self._send_response(http_response, HTTPStatus.OK, 'text/plain')
 
-    async def listen_http_500(self, http_response):
+    # Método assíncrono que gera uma resposta 200 OK com conteúdo HTML.
+    async def listen_http_200(self, http_response: Event) -> Any:
+        """Gera uma resposta 200 OK com conteúdo HTML."""
+        return await self._send_response(http_response, HTTPStatus.OK, 'text/html')
 
-        start_response = http_response.data['start_response']
-        status = f"{HTTPStatus.INTERNAL_SERVER_ERROR.value} {HTTPStatus.INTERNAL_SERVER_ERROR.phrase}"  # Define o status 500 Internal Server Error
-        headers = [
-            ('Content-type', 'text/plain; charset=utf-8'),
-            ("Server", "W.F. Orbit v1.0.0")    
-        ]  # Define os headers para texto simples UTF-8
-        return start_response(status, headers)  # Chama start_response com status e headers
+    # Método assíncrono que gera uma resposta 401 Unauthorized com autenticação básica.
+    async def listen_http_401(self, http_response: Event) -> Any:
+        """Gera uma resposta 401 Unauthorized com autenticação básica."""
+        extra_headers = [('WWW-Authenticate', 'xBasic realm="Access to the staging site", charset="UTF-8"')]
+        return await self._send_response(http_response, HTTPStatus.UNAUTHORIZED, 'text/plain', extra_headers)
 
+    # Método assíncrono que gera uma resposta 404 Not Found.
+    async def listen_http_404(self, http_response: Event) -> Any:
+        """Gera uma resposta 404 Not Found."""
+        return await self._send_response(http_response, HTTPStatus.NOT_FOUND, 'text/plain')
 
-# Define um ponto de entrada claro para a execução
+    # Método assíncrono que gera uma resposta 500 Internal Server Error.
+    async def listen_http_500(self, http_response: Event) -> Any:
+        """Gera uma resposta 500 Internal Server Error."""
+        return await self._send_response(http_response, HTTPStatus.INTERNAL_SERVER_ERROR, 'text/plain')
+
+# Função principal para demonstração e testes de funcionamento da classe HTTPHeaders.
+async def main():
+    """Função principal para demonstração e testes."""
+    # Cria uma instância da classe HTTPHeaders.
+    http_headers = HTTPHeaders()
+    
+    # Cria um objeto de evento fictício para simular respostas HTTP.
+    dummy_event = Event(event_type="dummy", data={'start_response': lambda status, headers: (status, headers)})
+    
+    # Gera várias respostas simuladas usando métodos da classe HTTPHeaders.
+    responses = [
+        await http_headers.listen_text_200(dummy_event),
+        await http_headers.listen_http_200(dummy_event),
+        await http_headers.listen_http_401(dummy_event),
+        await http_headers.listen_http_404(dummy_event),
+        await http_headers.listen_http_500(dummy_event)
+    ]
+    
+    # Imprime o status e os cabeçalhos de cada resposta gerada.
+    for status, headers in responses:
+        print(f"Status: {status}")
+        print("Headers:")
+        for header in headers:
+            print(f"  {header[0]}: {header[1]}")
+        print()
+
+# Ponto de entrada para execução direta do script.
 if __name__ == '__main__':
-
-    # Instancia EventManager para iniciar o proccessamento do codigo
-    asyncio.run(HTTPHeaders)
+    # Executa a função main utilizando o loop de eventos asyncio.
+    asyncio.run(main())

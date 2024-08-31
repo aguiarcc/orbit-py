@@ -1,3 +1,16 @@
+#!/home/agr/.virtualenvs/wse/bin/python3.12
+# -*-coding:utf-8 -*-
+'''
+⦿ Project  : Orbit
+⦿ Desc.     :  Web framework de back-end que trata ( http request ) de maneira assíncrona, ideal para programadores python.
+⦿ Author  :   João Aguiar 
+⦿ Contact :   joao.aguiar@webstrucs.com
+⦿ File         :   eventlogger.py
+⦿ Time      :   2024/08/31 08:25:31
+⦿ Version :   1.0.0
+⦿ License :   © Webstrucs 2024,  Powered by João Aguiar
+'''
+
 # Importa o módulo asyncio, que fornece suporte para programação assíncrona e operações baseadas em eventos.
 import asyncio  
 # Importa o módulo logging, usado para gerar logs de eventos, facilitando a depuração e monitoramento da aplicação.

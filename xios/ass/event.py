@@ -1,3 +1,16 @@
+#!/home/agr/.virtualenvs/wse/bin/python3.12
+# -*-coding:utf-8 -*-
+'''
+⦿ Project  : Orbit
+⦿ Desc.     :  Web framework de back-end que trata ( http request ) de maneira assíncrona, ideal para programadores python.
+⦿ Author  :   João Aguiar 
+⦿ Contact :   joao.aguiar@webstrucs.com
+⦿ File         :   event.py
+⦿ Time      :   2024/08/31 07:56:55
+⦿ Version :   1.0.0
+⦿ License :   © Webstrucs 2024,  Powered by João Aguiar
+'''
+
 # Importa os tipos Dict e Any do módulo typing para anotações de tipo
 from typing import Dict, Any
 
